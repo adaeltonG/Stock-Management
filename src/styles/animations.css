@@ -1,0 +1,90 @@
+/**
+ * Reusable Animations
+ * Define once, use anywhere
+ */
+
+/* Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In */
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide In From Right */
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Scale In */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Pulse */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Spin */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Utility Classes */
+.fade-in {
+  animation: fadeIn var(--transition-slow) ease;
+}
+
+.slide-in {
+  animation: slideIn var(--transition-slow) ease;
+}
+
+.slide-in-right {
+  animation: slideInRight var(--transition-slow) ease;
+}
+
+.scale-in {
+  animation: scaleIn var(--transition-base) ease;
+}
+

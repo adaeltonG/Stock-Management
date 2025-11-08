@@ -1,0 +1,65 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: var(--space-5);
+}
+
+.background {
+  width: 100%;
+  max-width: 450px;
+}
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  padding: var(--space-10);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.logoContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-primary-100) 100%);
+  border-radius: var(--radius-2xl);
+  margin-bottom: var(--space-5);
+}
+
+.header h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-2);
+}
+
+.header p {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-500);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.footer {
+  margin-top: var(--space-8);
+  text-align: center;
+}
+
+.footer p {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+}
+
