@@ -288,19 +288,21 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, title, st
         </div>
         <form onSubmit={handleSubmit} className={styles.productForm}>
           <div className={styles.formRow}>
-            <div className="form-group">
-              <label>SKU *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>SKU *</label>
               <input
                 type="text"
+                className={styles.formInput}
                 value={formData.sku}
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Product Name *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Product Name *</label>
               <input
                 type="text"
+                className={styles.formInput}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
@@ -308,39 +310,43 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, title, st
             </div>
           </div>
 
-          <div className="form-group">
-            <label>Description</label>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Description</label>
             <textarea
+              className={styles.formTextarea}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Category *</label>
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Category *</label>
               <input
                 type="text"
+                className={styles.formInput}
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Unit *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Unit *</label>
               <input
                 type="text"
+                className={styles.formInput}
                 value={formData.unit}
                 onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                 placeholder="e.g. bottle, pack, kg"
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Supplier *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Supplier *</label>
               <input
                 type="text"
+                className={styles.formInput}
                 value={formData.supplier}
                 onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
                 required
@@ -348,29 +354,32 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, title, st
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Current Stock *</label>
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Current Stock *</label>
               <input
                 type="number"
+                className={styles.formInput}
                 value={formData.currentStock}
                 onChange={(e) => setFormData({ ...formData, currentStock: Number(e.target.value) })}
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Min Stock Level *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Min Stock Level *</label>
               <input
                 type="number"
+                className={styles.formInput}
                 value={formData.minStockLevel}
                 onChange={(e) => setFormData({ ...formData, minStockLevel: Number(e.target.value) })}
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Max Stock Level *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Max Stock Level *</label>
               <input
                 type="number"
+                className={styles.formInput}
                 value={formData.maxStockLevel}
                 onChange={(e) => setFormData({ ...formData, maxStockLevel: Number(e.target.value) })}
                 required
@@ -378,20 +387,22 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, title, st
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Reorder Quantity *</label>
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Reorder Quantity *</label>
               <input
                 type="number"
+                className={styles.formInput}
                 value={formData.reorderQuantity}
                 onChange={(e) => setFormData({ ...formData, reorderQuantity: Number(e.target.value) })}
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Unit Price (£) *</label>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Unit Price (£) *</label>
               <input
                 type="number"
+                className={styles.formInput}
                 step="0.01"
                 value={formData.unitPrice}
                 onChange={(e) => setFormData({ ...formData, unitPrice: Number(e.target.value) })}

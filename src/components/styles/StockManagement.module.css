@@ -57,7 +57,13 @@
 .modalClose { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--color-gray-400); background: transparent; border-radius: var(--radius-md); line-height: 1; border: none; cursor: pointer; transition: all var(--transition-base); }
 .modalClose:hover { color: var(--color-gray-900); background: var(--color-gray-100); }
 .productForm { padding: var(--space-6); }
-.formRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); }
+.formRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5); }
+.formGroup { display: flex; flex-direction: column; gap: var(--space-2); }
+.formLabel { font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--color-gray-700); }
+.formInput, .formTextarea { width: 100%; padding: var(--space-3) var(--space-4); font-size: var(--font-size-base); color: var(--color-gray-900); background: var(--color-white); border: 2px solid var(--color-gray-200); border-radius: var(--radius-md); transition: all var(--transition-base); }
+.formInput:focus, .formTextarea:focus { outline: none; border-color: var(--color-primary-600); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+.formTextarea { resize: vertical; min-height: 80px; font-family: inherit; line-height: 1.5; }
+.formInput::placeholder { color: var(--color-gray-400); }
 .formActions { display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-6); padding-top: var(--space-6); border-top: 2px solid var(--color-gray-100); }
 .btnCancel { padding: var(--space-3) var(--space-6); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--color-gray-700); background: var(--color-gray-100); border-radius: var(--radius-md); border: none; cursor: pointer; transition: all var(--transition-base); }
 .btnCancel:hover { background: var(--color-gray-200); }
