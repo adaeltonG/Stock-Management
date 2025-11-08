@@ -37,7 +37,7 @@ interface AppState {
 
 // Mock data for demonstration
 const mockSites: Site[] = [
-  { id: '1', name: 'Main Warehouse', location: 'London', code: 'LDN-01' },
+  { id: '1', name: 'NBC Universal', location: 'London', code: 'NBC-01' },
   { id: '2', name: 'North Branch', location: 'Manchester', code: 'MAN-01' },
   { id: '3', name: 'South Branch', location: 'Brighton', code: 'BTN-01' },
 ];
