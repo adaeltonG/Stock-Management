@@ -1,5 +1,5 @@
 import initSqlJs, { Database } from 'sql.js';
-import { Ingredient, PurchaseItem, Recipe, RecipeLineItem, UnitConversion } from '../types';
+import { Ingredient, PurchaseItem, Recipe, RecipeLineItem } from '../types';
 
 let db: Database | null = null;
 
@@ -435,6 +435,224 @@ export async function getAllPurchaseItems(): Promise<PurchaseItem[]> {
 
 export async function recalculateRecipeCosts(): Promise<void> {
   const database = await initializeDatabase();
+  updateRecipeCosts(database);
+}
+
+// Update recipe
+export async function updateRecipe(recipe: Partial<Recipe> & { id: string }): Promise<void> {
+  const database = await initializeDatabase();
+  const now = new Date().toISOString();
+  
+  const updates: string[] = [];
+  const values: any[] = [];
+  
+  if (recipe.name !== undefined) {
+    updates.push('name = ?');
+    values.push(recipe.name);
+  }
+  if (recipe.description !== undefined) {
+    updates.push('description = ?');
+    values.push(recipe.description);
+  }
+  if (recipe.isSubRecipe !== undefined) {
+    updates.push('isSubRecipe = ?');
+    values.push(recipe.isSubRecipe ? 1 : 0);
+  }
+  if (recipe.yieldQuantity !== undefined) {
+    updates.push('yieldQuantity = ?');
+    values.push(recipe.yieldQuantity);
+  }
+  if (recipe.yieldUnit !== undefined) {
+    updates.push('yieldUnit = ?');
+    values.push(recipe.yieldUnit);
+  }
+  if (recipe.prepTime !== undefined) {
+    updates.push('prepTime = ?');
+    values.push(recipe.prepTime);
+  }
+  if (recipe.cookTime !== undefined) {
+    updates.push('cookTime = ?');
+    values.push(recipe.cookTime);
+  }
+  if (recipe.instructions !== undefined) {
+    updates.push('instructions = ?');
+    values.push(recipe.instructions);
+  }
+  
+  updates.push('lastUpdated = ?');
+  values.push(now);
+  values.push(recipe.id);
+  
+  database.run(
+    `UPDATE recipes SET ${updates.join(', ')} WHERE id = ?`,
+    values
+  );
+  
+  // Recalculate costs
+  updateRecipeCosts(database);
+}
+
+// Update recipe line item
+export async function updateRecipeLineItem(
+  lineItemId: string,
+  updates: Partial<RecipeLineItem>
+): Promise<void> {
+  const database = await initializeDatabase();
+  
+  const updateFields: string[] = [];
+  const values: any[] = [];
+  
+  if (updates.itemId !== undefined) {
+    updateFields.push('itemId = ?');
+    values.push(updates.itemId);
+  }
+  if (updates.itemType !== undefined) {
+    updateFields.push('itemType = ?');
+    values.push(updates.itemType);
+  }
+  if (updates.itemName !== undefined) {
+    updateFields.push('itemName = ?');
+    values.push(updates.itemName);
+  }
+  if (updates.quantity !== undefined) {
+    updateFields.push('quantity = ?');
+    values.push(updates.quantity);
+  }
+  if (updates.unit !== undefined) {
+    updateFields.push('unit = ?');
+    values.push(updates.unit);
+  }
+  if (updates.notes !== undefined) {
+    updateFields.push('notes = ?');
+    values.push(updates.notes);
+  }
+  
+  if (updateFields.length === 0) return;
+  
+  values.push(lineItemId);
+  
+  database.run(
+    `UPDATE recipe_line_items SET ${updateFields.join(', ')} WHERE id = ?`,
+    values
+  );
+  
+  // Recalculate costs
+  updateRecipeCosts(database);
+}
+
+// Add recipe line item
+export async function addRecipeLineItem(lineItem: Omit<RecipeLineItem, 'id' | 'cost'>): Promise<string> {
+  const database = await initializeDatabase();
+  const id = `li-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  
+  database.run(
+    'INSERT INTO recipe_line_items (id, recipeId, itemId, itemType, itemName, quantity, unit, cost, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [
+      id,
+      lineItem.recipeId,
+      lineItem.itemId,
+      lineItem.itemType,
+      lineItem.itemName,
+      lineItem.quantity,
+      lineItem.unit,
+      0,
+      lineItem.notes || null,
+    ]
+  );
+  
+  // Recalculate costs
+  updateRecipeCosts(database);
+  
+  return id;
+}
+
+// Delete recipe line item
+export async function deleteRecipeLineItem(lineItemId: string): Promise<void> {
+  const database = await initializeDatabase();
+  
+  // Get recipeId before deleting
+  const result = database.exec('SELECT recipeId FROM recipe_line_items WHERE id = ?', [lineItemId]);
+  const recipeId = result.length > 0 && result[0].values.length > 0 
+    ? result[0].values[0][0] as string 
+    : null;
+  
+  database.run('DELETE FROM recipe_line_items WHERE id = ?', [lineItemId]);
+  
+  // Recalculate costs
+  if (recipeId) {
+    updateRecipeCosts(database);
+  }
+}
+
+// Update purchase item
+export async function updatePurchaseItem(
+  purchaseItemId: string,
+  updates: Partial<PurchaseItem>
+): Promise<void> {
+  const database = await initializeDatabase();
+  const now = new Date().toISOString();
+  
+  const updateFields: string[] = [];
+  const values: any[] = [];
+  
+  if (updates.supplierName !== undefined) {
+    updateFields.push('supplierName = ?');
+    values.push(updates.supplierName);
+  }
+  if (updates.purchasePrice !== undefined) {
+    updateFields.push('purchasePrice = ?');
+    values.push(updates.purchasePrice);
+  }
+  if (updates.purchaseQuantity !== undefined) {
+    updateFields.push('purchaseQuantity = ?');
+    values.push(updates.purchaseQuantity);
+  }
+  if (updates.purchaseUnit !== undefined) {
+    updateFields.push('purchaseUnit = ?');
+    values.push(updates.purchaseUnit);
+  }
+  
+  // Recalculate costPerBaseUnit if price or quantity changed
+  if (updates.purchasePrice !== undefined || updates.purchaseQuantity !== undefined) {
+    // Get ingredient base unit
+    const purchaseItem = database.exec('SELECT ingredientId, purchasePrice, purchaseQuantity, purchaseUnit FROM purchase_items WHERE id = ?', [purchaseItemId]);
+    if (purchaseItem.length > 0 && purchaseItem[0].values.length > 0) {
+      const row = purchaseItem[0].values[0];
+      const ingredientId = row[0] as string;
+      const price = updates.purchasePrice !== undefined ? updates.purchasePrice : row[1] as number;
+      const qty = updates.purchaseQuantity !== undefined ? updates.purchaseQuantity : row[2] as number;
+      const unit = updates.purchaseUnit !== undefined ? updates.purchaseUnit : row[3] as string;
+      
+      // Get ingredient base unit
+      const ingredient = database.exec('SELECT baseUnit FROM ingredients WHERE id = ?', [ingredientId]);
+      if (ingredient.length > 0 && ingredient[0].values.length > 0) {
+        const baseUnit = ingredient[0].values[0][0] as string;
+        
+        // Convert purchase quantity to base unit
+        let qtyInBaseUnit = qty;
+        if (unit === 'kg' && baseUnit === 'g') {
+          qtyInBaseUnit = qty * 1000;
+        } else if (unit === 'l' && baseUnit === 'ml') {
+          qtyInBaseUnit = qty * 1000;
+        }
+        
+        const costPerBaseUnit = price / qtyInBaseUnit;
+        updateFields.push('costPerBaseUnit = ?');
+        values.push(costPerBaseUnit);
+      }
+    }
+  }
+  
+  updateFields.push('lastUpdated = ?');
+  values.push(now);
+  values.push(purchaseItemId);
+  
+  database.run(
+    `UPDATE purchase_items SET ${updateFields.join(', ')} WHERE id = ?`,
+    values
+  );
+  
+  // Recalculate all recipe costs since prices changed
   updateRecipeCosts(database);
 }
 

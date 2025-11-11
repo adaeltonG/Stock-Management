@@ -1,6 +1,17 @@
 import { create } from 'zustand';
 import { User, Site, Product, Invoice, StockTake, DashboardStats, Recipe, RecipeLineItem, Ingredient, PurchaseItem } from '../types';
-import { getAllRecipes, getRecipeLineItems, getAllIngredients, getAllPurchaseItems, recalculateRecipeCosts } from '../services/recipeDatabase';
+import { 
+  getAllRecipes, 
+  getRecipeLineItems, 
+  getAllIngredients, 
+  getAllPurchaseItems, 
+  recalculateRecipeCosts,
+  updateRecipe,
+  updateRecipeLineItem,
+  addRecipeLineItem,
+  deleteRecipeLineItem,
+  updatePurchaseItem
+} from '../services/recipeDatabase';
 
 interface AppState {
   // Auth
@@ -48,6 +59,11 @@ interface AppState {
   fetchPurchaseItems: () => Promise<void>;
   selectRecipe: (recipeId: string | null) => Promise<void>;
   refreshRecipeCosts: () => Promise<void>;
+  updateRecipe: (recipe: Partial<Recipe> & { id: string }) => Promise<void>;
+  updateRecipeLineItem: (lineItemId: string, updates: Partial<RecipeLineItem>) => Promise<void>;
+  addRecipeLineItem: (lineItem: Omit<RecipeLineItem, 'id' | 'cost'>) => Promise<void>;
+  deleteRecipeLineItem: (lineItemId: string) => Promise<void>;
+  updatePurchaseItem: (purchaseItemId: string, updates: Partial<PurchaseItem>) => Promise<void>;
 }
 
 // Mock data for demonstration
@@ -440,6 +456,82 @@ export const useStore = create<AppState>((set, get) => ({
       }
     } catch (error) {
       console.error('Error refreshing recipe costs:', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateRecipe: async (recipe: Partial<Recipe> & { id: string }) => {
+    set({ isLoading: true });
+    try {
+      await updateRecipe(recipe);
+      await get().fetchRecipes();
+      if (get().selectedRecipe?.id === recipe.id) {
+        await get().selectRecipe(recipe.id);
+      }
+    } catch (error) {
+      console.error('Error updating recipe:', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateRecipeLineItem: async (lineItemId: string, updates: Partial<RecipeLineItem>) => {
+    set({ isLoading: true });
+    try {
+      await updateRecipeLineItem(lineItemId, updates);
+      await get().fetchRecipes();
+      if (get().selectedRecipe) {
+        await get().selectRecipe(get().selectedRecipe!.id);
+      }
+    } catch (error) {
+      console.error('Error updating recipe line item:', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  addRecipeLineItem: async (lineItem: Omit<RecipeLineItem, 'id' | 'cost'>) => {
+    set({ isLoading: true });
+    try {
+      await addRecipeLineItem(lineItem);
+      await get().fetchRecipes();
+      if (get().selectedRecipe) {
+        await get().selectRecipe(get().selectedRecipe!.id);
+      }
+    } catch (error) {
+      console.error('Error adding recipe line item:', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteRecipeLineItem: async (lineItemId: string) => {
+    set({ isLoading: true });
+    try {
+      await deleteRecipeLineItem(lineItemId);
+      await get().fetchRecipes();
+      if (get().selectedRecipe) {
+        await get().selectRecipe(get().selectedRecipe!.id);
+      }
+    } catch (error) {
+      console.error('Error deleting recipe line item:', error);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updatePurchaseItem: async (purchaseItemId: string, updates: Partial<PurchaseItem>) => {
+    set({ isLoading: true });
+    try {
+      await updatePurchaseItem(purchaseItemId, updates);
+      await get().fetchPurchaseItems();
+      await get().fetchRecipes();
+      if (get().selectedRecipe) {
+        await get().selectRecipe(get().selectedRecipe!.id);
+      }
+    } catch (error) {
+      console.error('Error updating purchase item:', error);
     } finally {
       set({ isLoading: false });
     }

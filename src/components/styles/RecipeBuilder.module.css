@@ -641,9 +641,10 @@
 
 .priceDetail {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   font-size: 14px;
+  gap: 8px;
 }
 
 .priceDetailLabel {
@@ -746,6 +747,188 @@
   padding: 32px;
   overflow-y: auto;
   flex: 1;
+}
+
+/* Edit Button */
+.btnEdit {
+  background: #f3f4f6;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnEdit:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* Edit Modal Tabs */
+.editTabs {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0 32px;
+  gap: 8px;
+}
+
+.editTab {
+  background: none;
+  border: none;
+  padding: 16px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  margin-bottom: -2px;
+}
+
+.editTab:hover {
+  color: #2563eb;
+  background: #f9fafb;
+}
+
+.editTabActive {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+/* Edit Form */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.formInput {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  transition: all 0.2s;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.formInputInline {
+  padding: 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1a1a1a;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.formInputInline:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.formTextarea {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Buttons */
+.btnSave {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.btnSave:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btnAdd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnAdd:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btnDelete {
+  background: #fee2e2;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #dc2626;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnDelete:hover {
+  background: #dc2626;
+  color: white;
 }
 
 @media (max-width: 768px) {
