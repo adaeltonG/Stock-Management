@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, Building2, User, LayoutDashboard, Package, FileText, BarChart3 } from 'lucide-react';
+import { LogOut, Building2, User, LayoutDashboard, Package, FileText, BarChart3, ChefHat } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import styles from './styles/Layout.module.css';
 
@@ -12,6 +12,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const tabs = [
     { id: 'dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
+    { id: 'recipes', label: 'Recipe Builder', icon: ChefHat },
     { id: 'stock', label: 'Stock Management', icon: Package },
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },

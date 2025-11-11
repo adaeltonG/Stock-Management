@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { User, Site, Product, Invoice, StockTake, DashboardStats } from '../types';
+import { User, Site, Product, Invoice, StockTake, DashboardStats, Recipe, RecipeLineItem, Ingredient, PurchaseItem } from '../types';
+import { getAllRecipes, getRecipeLineItems, getAllIngredients, getAllPurchaseItems, recalculateRecipeCosts } from '../services/recipeDatabase';
 
 interface AppState {
   // Auth
@@ -13,6 +14,13 @@ interface AppState {
   invoices: Invoice[];
   stockTakes: StockTake[];
   dashboardStats: DashboardStats | null;
+  
+  // Recipe Data
+  recipes: Recipe[];
+  ingredients: Ingredient[];
+  purchaseItems: PurchaseItem[];
+  selectedRecipe: Recipe | null;
+  recipeLineItems: RecipeLineItem[];
   
   // UI State
   currentTab: string;
@@ -33,6 +41,13 @@ interface AppState {
   updateProduct: (product: Product) => Promise<void>;
   addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
+  
+  // Recipe Actions
+  fetchRecipes: () => Promise<void>;
+  fetchIngredients: () => Promise<void>;
+  fetchPurchaseItems: () => Promise<void>;
+  selectRecipe: (recipeId: string | null) => Promise<void>;
+  refreshRecipeCosts: () => Promise<void>;
 }
 
 // Mock data for demonstration
@@ -232,6 +247,11 @@ export const useStore = create<AppState>((set, get) => ({
   invoices: [],
   stockTakes: [],
   dashboardStats: null,
+  recipes: [],
+  ingredients: [],
+  purchaseItems: [],
+  selectedRecipe: null,
+  recipeLineItems: [],
   currentTab: 'dashboard',
   searchQuery: '',
   selectedCategory: 'all',
@@ -357,6 +377,72 @@ export const useStore = create<AppState>((set, get) => ({
       products: state.products.filter(p => p.id !== id),
       isLoading: false,
     }));
+  },
+
+  // Recipe Actions
+  fetchRecipes: async () => {
+    set({ isLoading: true });
+    try {
+      const recipes = await getAllRecipes();
+      set({ recipes, isLoading: false });
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      set({ isLoading: false });
+    }
+  },
+
+  fetchIngredients: async () => {
+    try {
+      const ingredients = await getAllIngredients();
+      set({ ingredients });
+    } catch (error) {
+      console.error('Error fetching ingredients:', error);
+    }
+  },
+
+  fetchPurchaseItems: async () => {
+    try {
+      const purchaseItems = await getAllPurchaseItems();
+      set({ purchaseItems });
+    } catch (error) {
+      console.error('Error fetching purchase items:', error);
+    }
+  },
+
+  selectRecipe: async (recipeId: string | null) => {
+    if (!recipeId) {
+      set({ selectedRecipe: null, recipeLineItems: [] });
+      return;
+    }
+
+    set({ isLoading: true });
+    try {
+      const recipe = get().recipes.find(r => r.id === recipeId);
+      const lineItems = await getRecipeLineItems(recipeId);
+      set({ 
+        selectedRecipe: recipe || null, 
+        recipeLineItems: lineItems,
+        isLoading: false 
+      });
+    } catch (error) {
+      console.error('Error selecting recipe:', error);
+      set({ isLoading: false });
+    }
+  },
+
+  refreshRecipeCosts: async () => {
+    set({ isLoading: true });
+    try {
+      await recalculateRecipeCosts();
+      await get().fetchRecipes();
+      if (get().selectedRecipe) {
+        await get().selectRecipe(get().selectedRecipe!.id);
+      }
+    } catch (error) {
+      console.error('Error refreshing recipe costs:', error);
+    } finally {
+      set({ isLoading: false });
+    }
   },
 }));
 

@@ -3,6 +3,7 @@ import { useStore } from './store/useStore';
 import Login from './components/Login';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
+import RecipeBuilder from './components/RecipeBuilder';
 import StockManagement from './components/StockManagement';
 import Reports from './components/Reports';
 import Analytics from './components/Analytics';
@@ -18,6 +19,8 @@ function App() {
     switch (currentTab) {
       case 'dashboard':
         return <Dashboard />;
+      case 'recipes':
+        return <RecipeBuilder />;
       case 'stock':
         return <StockManagement />;
       case 'reports':
